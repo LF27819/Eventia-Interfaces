@@ -3,6 +3,7 @@ import Navigation from "./components/layout/Navigation";
 import Footer from "./components/layout/Footer";
 import AppRouter from "./routes/AppRouter";
 
+
 function App() {
   return (
     <div className="app">

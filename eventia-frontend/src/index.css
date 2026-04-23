@@ -311,3 +311,16 @@ input {
 .logout-button:hover {
   background-color: #ddd6fe;
 }
+
+.profile-card {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.profile-card h2 {
+  margin-bottom: 1.5rem;
+}
+
+.profile-card p {
+  margin-bottom: 0.6rem;
+}
