@@ -1,24 +1,13 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
-import {
-  clearToken,
-  getToken,
-  loginRequest,
-  meRequest,
-  saveToken,
-} from "../api/authService";
-import type { AuthUser, LoginRequest } from "../types/auth";
+import { createContext, useContext, useEffect, useState, type ReactNode,} from "react";
+import { clearToken, getToken, loginRequest, meRequest, registerRequest, saveToken, } from "../api/authService";
+import type { AuthUser, LoginRequest, RegisterRequest } from "../types/auth";
 
 interface AuthContextType {
   token: string | null;
   user: AuthUser | null;
   loadingSession: boolean;
   login: (data: LoginRequest) => Promise<void>;
+  register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
 }
 
@@ -78,6 +67,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
   };
 
+  const register = async (data: RegisterRequest) => {
+    const response = await registerRequest(data);
+
+    saveToken(response.token);
+    setToken(response.token);
+
+    setUser({
+      email: response.email,
+      rol: response.rol,
+      nombre: response.nombre,
+    });
+  };
+
   const logout = () => {
     clearToken();
     setToken(null);
@@ -85,7 +87,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, loadingSession, login, logout }}>
+    <AuthContext.Provider
+      value={{ token, user, loadingSession, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
