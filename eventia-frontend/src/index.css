@@ -82,7 +82,7 @@ input {
 
 .nav-list {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem 0;
 }
 
@@ -277,4 +277,37 @@ input {
 .login-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-session {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nav-user {
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.logout-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  background-color: #ede9fe;
+  color: var(--color-primario);
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #ddd6fe;
 }

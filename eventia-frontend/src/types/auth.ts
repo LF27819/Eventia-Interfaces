@@ -11,7 +11,15 @@ export interface LoginRequest {
 }
 
 export interface AuthUser {
+  id?: number;
   email: string;
   rol: string;
   nombre: string;
+}
+
+export interface MeResponse {
+  id: number;
+  nombre: string;
+  email: string;
+  rol: string;
 }
