@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getEventos } from "../api/eventService";
 import type { Event } from "../types/event";
+import EventCard from "../components/events/EventCard";
 
 function EventsPage() {
   const [eventos, setEventos] = useState<Event[]>([]);
@@ -37,24 +38,7 @@ function EventsPage() {
               <p>No hay eventos disponibles.</p>
             ) : (
               eventos.map((evento) => (
-                <article key={evento.id} className="card event-card">
-                  <span className="event-category">{evento.categoria}</span>
-                  <h3 className="title-events">{evento.nombre}</h3>
-                  <p>{evento.descripcion}</p>
-                  <p>
-                    <strong>Fecha:</strong> {evento.fechaEvento}
-                  </p>
-                  <p>
-                    <strong>Hora:</strong> {evento.horaEvento}
-                  </p>
-                  <p>
-                    <strong>Precio:</strong> {evento.precioEntrada} €
-                  </p>
-                  <p>
-                    <strong>Modalidad:</strong>{" "}
-                    {evento.presencial ? "Presencial" : "Online"}
-                  </p>
-                </article>
+                <EventCard key={evento.id} evento={evento} />
               ))
             )}
           </div>
