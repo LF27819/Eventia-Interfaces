@@ -13,7 +13,7 @@ function EventsPage() {
         const data = await getEventos();
         setEventos(data);
       } catch (err) {
-        console.error(err);
+        console.error("Error al cargar eventos:", err);
         setError("No se pudieron cargar los eventos");
       } finally {
         setCargando(false);
@@ -23,28 +23,44 @@ function EventsPage() {
     cargarEventos();
   }, []);
 
-  if (cargando) return <p>Cargando eventos...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
-    <div>
-      <h1>Eventos</h1>
+    <section className="page">
+      <div className="container">
+        <h2 className="page-title">Eventos</h2>
 
-      {eventos.length === 0 ? (
-        <p>No hay eventos disponibles.</p>
-      ) : (
-        eventos.map((evento) => (
-          <div key={evento.id}>
-            <h2>{evento.nombre}</h2>
-            <p>{evento.descripcion}</p>
-            <p>Fecha: {evento.fechaEvento}</p>
-            <p>Hora: {evento.horaEvento}</p>
-            <p>Precio: {evento.precioEntrada} €</p>
-            <hr />
+        {cargando && <p>Cargando eventos...</p>}
+        {error && <p className="error-message">{error}</p>}
+
+        {!cargando && !error && (
+          <div className="events-grid">
+            {eventos.length === 0 ? (
+              <p>No hay eventos disponibles.</p>
+            ) : (
+              eventos.map((evento) => (
+                <article key={evento.id} className="card event-card">
+                  <span className="event-category">{evento.categoria}</span>
+                  <h3 className="title-events">{evento.nombre}</h3>
+                  <p>{evento.descripcion}</p>
+                  <p>
+                    <strong>Fecha:</strong> {evento.fechaEvento}
+                  </p>
+                  <p>
+                    <strong>Hora:</strong> {evento.horaEvento}
+                  </p>
+                  <p>
+                    <strong>Precio:</strong> {evento.precioEntrada} €
+                  </p>
+                  <p>
+                    <strong>Modalidad:</strong>{" "}
+                    {evento.presencial ? "Presencial" : "Online"}
+                  </p>
+                </article>
+              ))
+            )}
           </div>
-        ))
-      )}
-    </div>
+        )}
+      </div>
+    </section>
   );
 }
 
