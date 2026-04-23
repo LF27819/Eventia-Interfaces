@@ -1,5 +1,5 @@
 import api from "./api";
-import type { AuthResponse, LoginRequest } from "../types/auth";
+import type { AuthResponse, LoginRequest, MeResponse } from "../types/auth";
 
 const TOKEN_KEY = "eventia_token";
 
@@ -7,6 +7,16 @@ export const loginRequest = async (
   payload: LoginRequest
 ): Promise<AuthResponse> => {
   const response = await api.post("/auth/login", payload);
+  return response.data;
+};
+
+export const meRequest = async (token: string): Promise<MeResponse> => {
+  const response = await api.get("/auth/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   return response.data;
 };
 
