@@ -246,3 +246,35 @@ input {
   outline: 2px solid rgba(124, 58, 237, 0.2);
   border-color: var(--color-primario);
 }
+
+.login-card {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.login-button {
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  background-color: var(--color-primario);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: var(--color-primario-hover);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
