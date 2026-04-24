@@ -5,6 +5,10 @@ import LoginPage from "../pages/LoginPage";
 import ProfilePage from "../pages/ProfilePage";
 import ProtectedRoute from "./ProtectedRoute";
 import RegisterPage from "../pages/RegisterPage";
+import AdminPage from "../pages/AdminPage";
+import OrganizerPage from "../pages/OrganizerPage";
+import MyBookingsPage from "../pages/MyBookingsPage";
+import RoleRoute from "./RoleRoute";
 
 function AppRouter() {
     return (
@@ -19,6 +23,32 @@ function AppRouter() {
                     <ProtectedRoute>
                         <ProfilePage />
                     </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/admin"
+                element={
+                    <RoleRoute allowedRoles={["ADMIN"]}>
+                        <AdminPage />
+                    </RoleRoute>
+                }
+            />
+
+            <Route
+                path="/organizador"
+                element={
+                    <RoleRoute allowedRoles={["ORGANIZADOR"]}>
+                        <OrganizerPage />
+                    </RoleRoute>
+                }
+            />
+
+            <Route
+                path="/mis-reservas"
+                element={
+                    <RoleRoute allowedRoles={["CLIENTE"]}>
+                        <MyBookingsPage />
+                    </RoleRoute>
                 }
             />
         </Routes>
