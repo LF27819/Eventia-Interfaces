@@ -401,3 +401,42 @@ input {
   font-weight: 800;
   cursor: pointer;
 }
+
+.event-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+.reserve-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.4rem;
+  background-color: var(--color-primario);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.reserve-button:hover {
+  background-color: var(--color-primario-hover);
+  transform: translateY(-2px);
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.event-card p {
+  margin-bottom: 0.5rem;
+}
+
+.event-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
