@@ -324,3 +324,80 @@ input {
 .profile-card p {
   margin-bottom: 0.6rem;
 }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  background-color: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-suave);
+  padding: 1.25rem;
+}
+
+.summary-title {
+  color: var(--color-texto-suave);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.summary-card h3 {
+  font-size: 2rem;
+  color: var(--color-primario);
+}
+
+.summary-description {
+  margin-top: 0.35rem;
+  color: var(--color-texto-suave);
+}
+
+.sort-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background-color: var(--color-superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-suave);
+  border: 1px solid var(--color-borde);
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.dashboard-table th {
+  background-color: #f8fafc;
+  color: var(--color-texto);
+  font-weight: 800;
+}
+
+.dashboard-table tr:last-child td {
+  border-bottom: none;
+}
+
+.table-sort-button {
+  border: none;
+  background: none;
+  color: var(--color-primario);
+  font-weight: 800;
+  cursor: pointer;
+}

@@ -4,7 +4,7 @@ function MyBookingsPage() {
       <div className="container">
         <div className="card">
           <h2>Mis reservas</h2>
-          <p>Aquí verás las reservas del cliente.</p>
+          <p>Próximamente verás aquí tus reservas.</p>
         </div>
       </div>
     </section>
