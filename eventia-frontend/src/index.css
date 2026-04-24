@@ -80,6 +80,13 @@ input {
   box-shadow: var(--sombra-suave);
 }
 
+.nav-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
 .nav-list {
   display: flex;
   gap: 1.5rem;
@@ -97,6 +104,32 @@ input {
 .nav-link:hover {
   background-color: #f3e8ff;
   color: var(--color-primario);
+}
+
+.nav-session {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nav-user {
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.logout-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  background-color: #ede9fe;
+  color: var(--color-primario);
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #ddd6fe;
 }
 
 .main-content {
@@ -140,22 +173,31 @@ input {
   gap: 1.25rem;
 }
 
-.event-card h3 {
-  margin: 0.5rem 0 0.75rem;
+.event-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.event-card p {
-  margin-bottom: 0.45rem;
-  color: var(--color-texto-suave);
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
 }
 
 .event-card:hover .title-events {
   color: var(--color-primario);
 }
 
+.event-card p {
+  margin-bottom: 0.5rem;
+  color: var(--color-texto-suave);
+}
+
 .event-category {
   display: block;
   text-align: center;
+  margin: 0 auto 0.8rem;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
   background-color: #ede9fe;
@@ -165,36 +207,7 @@ input {
 }
 
 .title-events {
-    text-align: center;
-    font-size: 1.25rem;
-    font-weight: 800;
-    margin: 0.5rem 0;
-    color: var(--color-texto);
-}
-
-.error-message {
-  color: var(--color-error);
-  font-weight: 600;
-}
-
-.footer {
-  margin-top: auto;
-  border-top: 1px solid var(--color-borde);
-  background-color: var(--color-superficie);
-  color: var(--color-texto-suave);
-  padding: 1.2rem 0;
-}
-
-.event-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.event-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
-}
-
-.title-events {
+  text-align: center;
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0.5rem 0 0.8rem;
@@ -202,17 +215,44 @@ input {
   transition: color 0.2s ease;
 }
 
-.event-card:hover .title-events {
+.event-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.reserve-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.4rem;
+  background-color: var(--color-primario);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.reserve-button:hover {
+  background-color: var(--color-primario-hover);
+  transform: translateY(-2px);
+}
+
+.reserve-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.event-message {
+  margin-top: 0.8rem;
+  text-align: center;
+  font-weight: 600;
   color: var(--color-primario);
 }
 
-.event-category {
-  display: block;
-  margin: 0 auto 0.8rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 700; 
+.error-message {
+  color: var(--color-error);
+  font-weight: 600;
 }
 
 .filters-bar {
@@ -233,12 +273,13 @@ input {
 }
 
 .filter-input {
-  flex: 1;              
+  flex: 1;
   min-width: 250px;
 }
+
 .filter-select {
   min-width: 200px;
-  max-width: 250px;   
+  max-width: 250px;
 }
 
 .filter-input:focus,
@@ -277,39 +318,6 @@ input {
 .login-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-}
-
-.nav-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1rem;
-}
-
-.nav-session {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.nav-user {
-  font-weight: 600;
-  color: var(--color-texto);
-}
-
-.logout-button {
-  border: none;
-  border-radius: 999px;
-  padding: 0.65rem 1rem;
-  background-color: #ede9fe;
-  color: var(--color-primario);
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.logout-button:hover {
-  background-color: #ddd6fe;
 }
 
 .profile-card {
@@ -402,41 +410,10 @@ input {
   cursor: pointer;
 }
 
-.event-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.2rem;
-}
-
-.reserve-button {
-  border: none;
-  border-radius: 999px;
-  padding: 0.75rem 1.4rem;
-  background-color: var(--color-primario);
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.reserve-button:hover {
-  background-color: var(--color-primario-hover);
-  transform: translateY(-2px);
-}
-
-.event-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.event-card p {
-  margin-bottom: 0.5rem;
-}
-
-.event-actions {
+.footer {
   margin-top: auto;
-  display: flex;
-  justify-content: center;
-  padding-top: 1rem;
+  border-top: 1px solid var(--color-borde);
+  background-color: var(--color-superficie);
+  color: var(--color-texto-suave);
+  padding: 1.2rem 0;
 }
