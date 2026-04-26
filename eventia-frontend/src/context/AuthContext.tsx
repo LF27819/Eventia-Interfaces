@@ -1,112 +1,144 @@
-import { createContext, useContext, useEffect, useState, type ReactNode, } from "react";
-import { clearToken, getToken, loginRequest, meRequest, registerRequest, saveToken, } from "../api/authService";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  type ReactNode,
+} from "react";
+import {
+  clearToken,
+  getToken,
+  loginRequest,
+  meRequest,
+  registerRequest,
+  saveToken,
+} from "../api/authService";
 import type { AuthUser, LoginRequest, RegisterRequest } from "../types/auth";
+import { authReducer, initialAuthState } from "../reducers/authReducer";
 
 interface AuthContextType {
-    token: string | null;
-    user: AuthUser | null;
-    loadingSession: boolean;
-    login: (data: LoginRequest) => Promise<void>;
-    register: (data: RegisterRequest) => Promise<void>;
-    logout: () => void;
+  token: string | null;
+  user: AuthUser | null;
+  loadingSession: boolean;
+  login: (data: LoginRequest) => Promise<void>;
+  register: (data: RegisterRequest) => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [token, setToken] = useState<string | null>(getToken());
-    const [user, setUser] = useState<AuthUser | null>(null);
-    const [loadingSession, setLoadingSession] = useState(true);
+  const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
-    useEffect(() => {
-        const restoreSession = async () => {
-            const storedToken = getToken();
+  useEffect(() => {
+    const restoreSession = async () => {
+      dispatch({ type: "RESTORE_SESSION_START" });
 
-            if (!storedToken) {
-                setLoadingSession(false);
-                return;
-            }
+      const storedToken = getToken();
 
-            try {
-                const me = await meRequest(storedToken);
+      if (!storedToken) {
+        dispatch({ type: "RESTORE_SESSION_ERROR" });
+        return;
+      }
 
-                setToken(storedToken);
-                setUser({
-                    id: me.id,
-                    email: me.email,
-                    rol: me.rol,
-                    nombre: me.nombre,
-                });
-            } catch (error) {
-                console.error("No se pudo restaurar la sesión:", error);
-                clearToken();
-                setToken(null);
-                setUser(null);
-            } finally {
-                setLoadingSession(false);
-            }
-        };
+      try {
+        const me = await meRequest(storedToken);
 
-        restoreSession();
-    }, []);
-
-    const login = async (data: LoginRequest) => {
-        const response = await loginRequest(data);
-
-        saveToken(response.token);
-        setToken(response.token);
-
-        const me = await meRequest(response.token);
-
-        setUser({
-            id: me.id,
-            email: me.email,
-            rol: me.rol,
-            nombre: me.nombre,
+        dispatch({
+          type: "RESTORE_SESSION_SUCCESS",
+          payload: {
+            token: storedToken,
+            user: {
+              id: me.id,
+              email: me.email,
+              rol: me.rol,
+              nombre: me.nombre,
+            },
+          },
         });
-    };
-
-    const register = async (data: RegisterRequest) => {
-        const response = await registerRequest(data);
-
-        saveToken(response.token);
-        setToken(response.token);
-
-        const me = await meRequest(response.token);
-
-        setUser({
-            id: me.id,
-            email: me.email,
-            rol: me.rol,
-            nombre: me.nombre,
-        });
-    };
-
-    const logout = () => {
+      } catch (error) {
+        console.error("No se pudo restaurar la sesión:", error);
         clearToken();
-        setToken(null);
-        setUser(null);
+        dispatch({ type: "RESTORE_SESSION_ERROR" });
+      }
     };
 
-    return (
-        <AuthContext.Provider
-            value={{ token, user, loadingSession, login, register, logout }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+    restoreSession();
+  }, []);
+
+  const login = async (data: LoginRequest) => {
+    const response = await loginRequest(data);
+
+    saveToken(response.token);
+
+    const me = await meRequest(response.token);
+
+    dispatch({
+      type: "LOGIN_SUCCESS",
+      payload: {
+        token: response.token,
+        user: {
+          id: me.id,
+          email: me.email,
+          rol: me.rol,
+          nombre: me.nombre,
+        },
+      },
+    });
+  };
+
+  const register = async (data: RegisterRequest) => {
+    const response = await registerRequest(data);
+
+    saveToken(response.token);
+
+    const me = await meRequest(response.token);
+
+    dispatch({
+      type: "REGISTER_SUCCESS",
+      payload: {
+        token: response.token,
+        user: {
+          id: me.id,
+          email: me.email,
+          rol: me.rol,
+          nombre: me.nombre,
+        },
+      },
+    });
+  };
+
+  const logout = () => {
+    clearToken();
+    dispatch({ type: "LOGOUT" });
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        token: state.token,
+        user: state.user,
+        loadingSession: state.loadingSession,
+        login,
+        register,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-    const context = useContext(AuthContext);
+  const context = useContext(AuthContext);
 
-    if (!context) {
-        throw new Error("useAuth debe usarse dentro de AuthProvider");
-    }
+  if (!context) {
+    throw new Error("useAuth debe usarse dentro de AuthProvider");
+  }
 
-    return context;
+  return context;
 }
