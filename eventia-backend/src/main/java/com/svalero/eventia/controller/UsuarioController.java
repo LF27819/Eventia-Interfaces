@@ -72,6 +72,19 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioActualizado);
     }
 
+    @PatchMapping("/usuarios/{id}/saldo")
+    public ResponseEntity<Usuario> addSaldo(@PathVariable long id,
+                                            @RequestBody Map<String, Float> request) throws UsuarioNotFoundException {
+        float cantidad = request.get("cantidad");
+
+        Usuario usuario = usuarioService.findById(id);
+        usuario.setSaldoCuenta(usuario.getSaldoCuenta() + cantidad);
+
+        Usuario usuarioActualizado = usuarioService.modify(id, usuario);
+
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+
 
 
     @ExceptionHandler(UsuarioNotFoundException.class)

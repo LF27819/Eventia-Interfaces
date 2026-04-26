@@ -109,7 +109,8 @@ public class AuthController {
                 usuario.getId(),
                 usuario.getNombre(),
                 usuario.getEmail(),
-                usuario.getRol()
+                usuario.getRol(),
+                usuario.getSaldoCuenta()
         );
 
         return ResponseEntity.ok(response);
