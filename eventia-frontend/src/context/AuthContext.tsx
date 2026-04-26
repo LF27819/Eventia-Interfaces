@@ -23,6 +23,7 @@ interface AuthContextType {
   login: (data: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
+  updateUser: (data: Partial<AuthUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -57,6 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
               email: me.email,
               rol: me.rol,
               nombre: me.nombre,
+              saldoCuenta: me.saldoCuenta,
             },
           },
         });
@@ -86,6 +88,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           email: me.email,
           rol: me.rol,
           nombre: me.nombre,
+          saldoCuenta: me.saldoCuenta,
         },
       },
     });
@@ -107,6 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           email: me.email,
           rol: me.rol,
           nombre: me.nombre,
+          saldoCuenta: me.saldoCuenta,
         },
       },
     });
@@ -115,6 +119,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = () => {
     clearToken();
     dispatch({ type: "LOGOUT" });
+  };
+
+  const updateUser = (data: Partial<AuthUser>) => {
+    dispatch({ type: "UPDATE_USER", payload: data });
   };
 
   return (
@@ -126,6 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         login,
         register,
         logout,
+        updateUser,
       }}
     >
       {children}

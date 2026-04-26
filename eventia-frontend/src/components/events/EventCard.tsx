@@ -9,7 +9,7 @@ interface EventCardProps {
 }
 
 function EventCard({ evento }: EventCardProps) {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
 
   const [reservando, setReservando] = useState(false);
@@ -21,6 +21,13 @@ function EventCard({ evento }: EventCardProps) {
       return;
     }
 
+    const precioTotal = evento.precioEntrada;
+
+    if (user.saldoCuenta < precioTotal) {
+      setError("Saldo insuficiente. Añade saldo en tu perfil.");
+      return;
+    }
+
     setReservando(true);
     setError("");
 
@@ -28,12 +35,16 @@ function EventCard({ evento }: EventCardProps) {
       await createReserva({
         fechaReserva: new Date().toISOString().slice(0, 19),
         cantidadEntradas: 1,
-        precioTotal: evento.precioEntrada,
+        precioTotal,
         metodoPago: "TARJETA",
         codigoReserva: `RES-${Date.now()}`,
         confirmada: true,
         usuario: { id: user.id },
         evento: { id: evento.id },
+      });
+
+      updateUser({
+        saldoCuenta: user.saldoCuenta - precioTotal,
       });
 
       navigate("/mis-reservas");

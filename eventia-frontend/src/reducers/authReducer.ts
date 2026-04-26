@@ -12,7 +12,9 @@ export type AuthAction =
     | { type: "RESTORE_SESSION_ERROR" }
     | { type: "LOGIN_SUCCESS"; payload: { token: string; user: AuthUser } }
     | { type: "REGISTER_SUCCESS"; payload: { token: string; user: AuthUser } }
+    | { type: "UPDATE_USER"; payload: Partial<AuthUser> }
     | { type: "LOGOUT" };
+
 
 export const initialAuthState: AuthState = {
     token: null,
@@ -54,6 +56,12 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
                 token: action.payload.token,
                 user: action.payload.user,
                 loadingSession: false,
+            };
+
+        case "UPDATE_USER":
+            return {
+                ...state,
+                user: state.user ? { ...state.user, ...action.payload } : null,
             };
 
         case "LOGOUT":
