@@ -1,32 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import { getEventos } from "../api/eventService";
-import type { Event } from "../types/event";
 import SummaryCard from "../components/dashboard/SummaryCard";
 import DashboardFilters from "../components/dashboard/DashboardFilters";
 import EventsDashboardTable from "../components/dashboard/EventsDashboardTable";
-
-type SortMode = "fecha" | "precio";
+import {
+  initialOrganizerDashboardState,
+  organizerDashboardReducer,
+} from "../reducers/organizerDashboardReducer";
 
 function OrganizerPage() {
-  const [eventos, setEventos] = useState<Event[]>([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
-
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [sortMode, setSortMode] = useState<SortMode>("fecha");
+  const [state, dispatch] = useReducer(
+    organizerDashboardReducer,
+    initialOrganizerDashboardState
+  );
 
   useEffect(() => {
     const cargarEventos = async () => {
+      dispatch({ type: "LOAD_START" });
+
       try {
         const data = await getEventos();
-        setEventos(data);
+        dispatch({ type: "LOAD_SUCCESS", payload: data });
       } catch (err) {
         console.error("Error al cargar eventos del organizador:", err);
-        setError("No se pudieron cargar los eventos");
-      } finally {
-        setCargando(false);
+        dispatch({
+          type: "LOAD_ERROR",
+          payload: "No se pudieron cargar los eventos",
+        });
       }
     };
 
@@ -34,26 +34,27 @@ function OrganizerPage() {
   }, []);
 
   const categories = useMemo(() => {
-    return [...new Set(eventos.map((evento) => evento.categoria))];
-  }, [eventos]);
+    return [...new Set(state.eventos.map((evento) => evento.categoria))];
+  }, [state.eventos]);
 
   const eventosFiltrados = useMemo(() => {
-    return eventos
+    return state.eventos
       .filter((evento) => {
         const coincideBusqueda = evento.nombre
           .toLowerCase()
-          .includes(search.toLowerCase());
+          .includes(state.search.toLowerCase());
 
         const coincideCategoria =
-          category === "" || evento.categoria === category;
+          state.category === "" || evento.categoria === state.category;
 
         const coincideFecha =
-          selectedDate === "" || evento.fechaEvento === selectedDate;
+          state.selectedDate === "" ||
+          evento.fechaEvento === state.selectedDate;
 
         return coincideBusqueda && coincideCategoria && coincideFecha;
       })
       .sort((a, b) => {
-        if (sortMode === "precio") {
+        if (state.sortMode === "precio") {
           return a.precioEntrada - b.precioEntrada;
         }
 
@@ -62,11 +63,17 @@ function OrganizerPage() {
           new Date(b.fechaEvento).getTime()
         );
       });
-  }, [eventos, search, category, selectedDate, sortMode]);
+  }, [
+    state.eventos,
+    state.search,
+    state.category,
+    state.selectedDate,
+    state.sortMode,
+  ]);
 
-  const totalEventos = eventos.length;
-  const activos = eventos.filter((evento) => !evento.cancelado).length;
-  const totalEntradas = eventos.reduce(
+  const totalEventos = state.eventos.length;
+  const activos = state.eventos.filter((evento) => !evento.cancelado).length;
+  const totalEntradas = state.eventos.reduce(
     (acc, evento) => acc + evento.entradasDisponibles,
     0
   );
@@ -76,10 +83,10 @@ function OrganizerPage() {
       <div className="container">
         <h2 className="page-title">Panel organizador</h2>
 
-        {cargando && <p>Cargando dashboard...</p>}
-        {error && <p className="error-message">{error}</p>}
+        {state.cargando && <p>Cargando dashboard...</p>}
+        {state.error && <p className="error-message">{state.error}</p>}
 
-        {!cargando && !error && (
+        {!state.cargando && !state.error && (
           <>
             <div className="summary-grid">
               <SummaryCard title="Eventos" value={totalEventos} />
@@ -91,26 +98,36 @@ function OrganizerPage() {
             </div>
 
             <DashboardFilters
-              search={search}
-              category={category}
-              selectedDate={selectedDate}
+              search={state.search}
+              category={state.category}
+              selectedDate={state.selectedDate}
               categories={categories}
-              onSearchChange={setSearch}
-              onCategoryChange={setCategory}
-              onDateChange={setSelectedDate}
+              onSearchChange={(value) =>
+                dispatch({ type: "SET_SEARCH", payload: value })
+              }
+              onCategoryChange={(value) =>
+                dispatch({ type: "SET_CATEGORY", payload: value })
+              }
+              onDateChange={(value) =>
+                dispatch({ type: "SET_DATE", payload: value })
+              }
             />
 
             <div className="sort-actions">
               <button
                 className="login-button"
-                onClick={() => setSortMode("fecha")}
+                onClick={() =>
+                  dispatch({ type: "SET_SORT_MODE", payload: "fecha" })
+                }
               >
                 Ordenar por fecha
               </button>
 
               <button
                 className="login-button"
-                onClick={() => setSortMode("precio")}
+                onClick={() =>
+                  dispatch({ type: "SET_SORT_MODE", payload: "precio" })
+                }
               >
                 Ordenar por precio
               </button>
@@ -118,8 +135,12 @@ function OrganizerPage() {
 
             <EventsDashboardTable
               eventos={eventosFiltrados}
-              onSortByDate={() => setSortMode("fecha")}
-              onSortByPrice={() => setSortMode("precio")}
+              onSortByDate={() =>
+                dispatch({ type: "SET_SORT_MODE", payload: "fecha" })
+              }
+              onSortByPrice={() =>
+                dispatch({ type: "SET_SORT_MODE", payload: "precio" })
+              }
             />
           </>
         )}
