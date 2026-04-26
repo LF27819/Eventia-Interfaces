@@ -23,6 +23,7 @@ export interface AuthUser {
   email: string;
   rol: string;
   nombre: string;
+  saldoCuenta: number;
 }
 
 export interface MeResponse {
@@ -30,4 +31,5 @@ export interface MeResponse {
   nombre: string;
   email: string;
   rol: string;
+  saldoCuenta: number;
 }
