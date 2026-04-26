@@ -1,17 +1,18 @@
 package com.svalero.eventia.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svalero.eventia.domain.Reserva;
+import com.svalero.eventia.domain.Usuario;
 import com.svalero.eventia.exception.ReservaNotFoundException;
 import com.svalero.eventia.repository.ReservaRepository;
+import com.svalero.eventia.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.Map;
-
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReservaService {
@@ -20,8 +21,10 @@ public class ReservaService {
     private ReservaRepository reservaRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public List<Reserva> findAll() {
         return reservaRepository.findAll();
@@ -33,6 +36,20 @@ public class ReservaService {
     }
 
     public Reserva add(Reserva reserva) {
+        Usuario usuario = usuarioRepository.findById(reserva.getUsuario().getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        float precioTotal = reserva.getPrecioTotal();
+
+        if (usuario.getSaldoCuenta() < precioTotal) {
+            throw new RuntimeException("Saldo insuficiente");
+        }
+
+        usuario.setSaldoCuenta(usuario.getSaldoCuenta() - precioTotal);
+        usuarioRepository.save(usuario);
+
+        reserva.setUsuario(usuario);
+
         return reservaRepository.save(reserva);
     }
 
