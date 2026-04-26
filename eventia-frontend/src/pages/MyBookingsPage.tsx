@@ -1,30 +1,34 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getReservas } from "../api/bookingService";
-import type { Booking } from "../types/booking";
 import SummaryCard from "../components/dashboard/SummaryCard";
 import BookingsDashboardTable from "../components/dashboard/BookingsDashboardTable";
+import {
+  clientDashboardReducer,
+  initialClientDashboardState,
+} from "../reducers/clientDashboardReducer";
 
 function MyBookingsPage() {
   const { user } = useAuth();
 
-  const [reservas, setReservas] = useState<Booking[]>([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
-
-  const [estado, setEstado] = useState("");
-  const [busqueda, setBusqueda] = useState("");
+  const [state, dispatch] = useReducer(
+    clientDashboardReducer,
+    initialClientDashboardState
+  );
 
   useEffect(() => {
     const cargarReservas = async () => {
+      dispatch({ type: "LOAD_START" });
+
       try {
         const data = await getReservas();
-        setReservas(data);
+        dispatch({ type: "LOAD_SUCCESS", payload: data });
       } catch (err) {
         console.error("Error al cargar reservas:", err);
-        setError("No se pudieron cargar tus reservas");
-      } finally {
-        setCargando(false);
+        dispatch({
+          type: "LOAD_ERROR",
+          payload: "No se pudieron cargar tus reservas",
+        });
       }
     };
 
@@ -32,30 +36,34 @@ function MyBookingsPage() {
   }, []);
 
   const misReservas = useMemo(() => {
-    return reservas.filter((reserva) => reserva.usuario?.email === user?.email);
-  }, [reservas, user]);
+    return state.reservas.filter(
+      (reserva) => reserva.usuario?.email === user?.email
+    );
+  }, [state.reservas, user]);
 
   const reservasFiltradas = useMemo(() => {
     return misReservas.filter((reserva) => {
       const coincideBusqueda =
         reserva.evento?.nombre
           ?.toLowerCase()
-          .includes(busqueda.toLowerCase()) ||
-        reserva.codigoReserva.toLowerCase().includes(busqueda.toLowerCase());
+          .includes(state.busqueda.toLowerCase()) ||
+        reserva.codigoReserva.toLowerCase().includes(state.busqueda.toLowerCase());
 
       const coincideEstado =
-        estado === "" ||
-        (estado === "confirmada" && reserva.confirmada) ||
-        (estado === "pendiente" && !reserva.confirmada);
+        state.estado === "" ||
+        (state.estado === "confirmada" && reserva.confirmada) ||
+        (state.estado === "pendiente" && !reserva.confirmada);
 
       return coincideBusqueda && coincideEstado;
     });
-  }, [misReservas, busqueda, estado]);
+  }, [misReservas, state.busqueda, state.estado]);
 
   const totalReservas = misReservas.length;
+
   const reservasConfirmadas = misReservas.filter(
     (reserva) => reserva.confirmada
   ).length;
+
   const gastoTotal = misReservas.reduce(
     (acc, reserva) => acc + reserva.precioTotal,
     0
@@ -66,10 +74,10 @@ function MyBookingsPage() {
       <div className="container">
         <h2 className="page-title">Mis reservas</h2>
 
-        {cargando && <p>Cargando reservas...</p>}
-        {error && <p className="error-message">{error}</p>}
+        {state.cargando && <p>Cargando reservas...</p>}
+        {state.error && <p className="error-message">{state.error}</p>}
 
-        {!cargando && !error && (
+        {!state.cargando && !state.error && (
           <>
             <div className="summary-grid">
               <SummaryCard
@@ -95,14 +103,18 @@ function MyBookingsPage() {
               <input
                 type="text"
                 placeholder="Buscar por evento o código..."
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)}
+                value={state.busqueda}
+                onChange={(e) =>
+                  dispatch({ type: "SET_BUSQUEDA", payload: e.target.value })
+                }
                 className="filter-input"
               />
 
               <select
-                value={estado}
-                onChange={(e) => setEstado(e.target.value)}
+                value={state.estado}
+                onChange={(e) =>
+                  dispatch({ type: "SET_ESTADO", payload: e.target.value })
+                }
                 className="filter-select"
               >
                 <option value="">Todos los estados</option>
