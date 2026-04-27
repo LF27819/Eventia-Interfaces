@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { Event } from "../../types/event";
 import { useAuth } from "../../context/AuthContext";
 import { createReserva } from "../../api/bookingService";
+import { Link } from "react-router-dom";
 
 interface EventCardProps {
   evento: Event;
@@ -60,7 +61,9 @@ function EventCard({ evento }: EventCardProps) {
     <article className="card event-card">
       <span className="event-category">{evento.categoria}</span>
 
-      <h3 className="title-events">{evento.nombre}</h3>
+      <h3 className="title-events">
+        <Link to={`/eventos/${evento.id}`}>{evento.nombre}</Link>
+      </h3>
 
       <p>{evento.descripcion}</p>
 

@@ -9,12 +9,14 @@ import AdminPage from "../pages/AdminPage";
 import OrganizerPage from "../pages/OrganizerPage";
 import MyBookingsPage from "../pages/MyBookingsPage";
 import RoleRoute from "./RoleRoute";
+import EventDetailPage from "../pages/EventDetailPage";
 
 function AppRouter() {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/eventos" element={<EventsPage />} />
+            <Route path="/eventos/:id" element={<EventDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route
