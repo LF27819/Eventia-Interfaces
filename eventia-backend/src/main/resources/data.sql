@@ -1,7 +1,7 @@
 INSERT INTO usuarios (nombre, apellidos, email, password, telefono, activo, fecha_nacimiento, eventos_asistidos, rol, saldo_cuenta) VALUES
 ('Lucia', 'Perez Gomez', 'lucia@gmail.com', 'cliente', '600111111', true, '1998-05-12', 5, 'CLIENTE', 50),
 ('Mario', 'Lopez Ruiz', 'mario@gmail.com', 'cliente', '600222222', true, '1995-03-20', 2, 'CLIENTE', 30),
-('Ana', 'Garcia Torres', 'ana@gmail.com', 'admin', '600333333', true, '1992-07-15', 10, 'ADMIN', 100),
+('Ana', 'Garcia Torres', 'ana@gmail.com', '$2a$10$ZJiTArRa9PFZkLQrXP/0T.dJdtBBKa6bsMRGg4Fx6IqmTHcOkXRba', '600333333', true, '1992-07-15', 10, 'ADMIN', 100),
 ('Carlos', 'Sanchez Diaz', 'carlos@gmail.com', 'organiz', '600444444', true, '1990-01-10', 7, 'ORGANIZADOR', 200),
 ('Laura', 'Martin Vega', 'laura@gmail.com', 'cliente', '600555555', true, '1999-11-25', 1, 'CLIENTE', 20),
 ('David', 'Fernandez Cruz', 'david@gmail.com', 'organiz', '600666666', true, '1993-09-08', 4, 'ORGANIZADOR', 150),
